@@ -1,28 +1,44 @@
+import { AppProvider, useApp } from '@/context/AppContext';
+import Navbar from '@/components/Navbar';
+import HomePage from '@/pages/HomePage';
+import CatalogPage from '@/pages/CatalogPage';
+import CartPage from '@/pages/CartPage';
+import OrdersPage from '@/pages/OrdersPage';
+import ReviewsPage from '@/pages/ReviewsPage';
+import LoginPage from '@/pages/LoginPage';
+import RegisterPage from '@/pages/RegisterPage';
+import AdminPage from '@/pages/AdminPage';
 
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Index from "./pages/Index";
-import NotFound from "./pages/NotFound";
+function AppRoutes() {
+  const { page } = useApp();
 
-const queryClient = new QueryClient();
+  const renderPage = () => {
+    if (page === 'home') return <HomePage />;
+    if (page === 'catalog') return <CatalogPage />;
+    if (page === 'cart') return <CartPage />;
+    if (page === 'orders') return <OrdersPage />;
+    if (page === 'reviews') return <ReviewsPage />;
+    if (page === 'login') return <LoginPage />;
+    if (page === 'register') return <RegisterPage />;
+    if (page === 'admin') return <AdminPage />;
+    if (page.startsWith('review:')) return <ReviewsPage />;
+    return <HomePage />;
+  };
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+  return (
+    <div className="min-h-screen bg-background">
+      <Navbar />
+      <main>
+        {renderPage()}
+      </main>
+    </div>
+  );
+}
 
-export default App;
+export default function App() {
+  return (
+    <AppProvider>
+      <AppRoutes />
+    </AppProvider>
+  );
+}
